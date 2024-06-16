@@ -1,18 +1,18 @@
 defmodule Tuftemark do
-  @moduledoc """
-  Documentation for `Tuftemark`.
-  """
+  @moduledoc false
 
-  @doc """
-  Hello world.
+  alias Earmark.{Options, Parser, Transform}
 
-  ## Examples
+  def as_html!(markdown, opts \\ []) do
+    {:ok, ast, _warnings} = Parser.as_ast(markdown)
 
-      iex> Tuftemark.hello()
-      :world
+    options = Options.make_options!(opts)
 
-  """
-  def hello do
-    :world
+    ast
+    |> wrap_in_article()
+    |> Transform.transform(options)
   end
+
+  # We must wrap the whole document in the article tag
+  defp wrap_in_article(ast), do: [{"article", [], ast, %{}}]
 end
