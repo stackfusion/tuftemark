@@ -9,10 +9,9 @@ defmodule Tuftemark do
     options = Options.make_options!(opts)
 
     ast
-    |> wrap_in_article()
+    |> wrap_in("article")
     |> Transform.transform(options)
   end
 
-  # We must wrap the whole document in the article tag
-  defp wrap_in_article(ast), do: [{"article", [], ast, %{}}]
+  defp wrap_in(ast, tagname), do: [{tagname, [], ast, %{}}]
 end
