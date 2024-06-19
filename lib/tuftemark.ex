@@ -15,7 +15,10 @@ defmodule Tuftemark do
   Some of layout decisions cannot be made automatically, but we can use some super powers provided us by default
   Earmark's Parser.
 
-  For example, if we want a paragraph written in sans-serif, we can use Kramdown syntax for attributes (`{:.sans}`).
+  For example:
+
+  - if we want a paragraph written in sans-serif, we can use Kramdown syntax for attributes: (`{:.sans}`);
+  - if we want to provide a citation (as a blockquote), we can use set an attr: `{:cite="https://example.com"}`;
 
   See all such examples in the TuftemarkTest suite.
   """
@@ -33,13 +36,37 @@ defmodule Tuftemark do
     options = Options.make_options!(opts)
 
     ast
+    |> Restructure.walk_and_modify_ast([], &convert_citations/2)
+    |> elem(0)
     |> Restructure.walk_and_modify_ast([], &make_section/2)
     |> last_section()
     |> wrap_in("article")
     |> Transform.transform(options)
   end
 
-  defp wrap_in(ast, tagname), do: [{tagname, [], ast, %{}}]
+  defp convert_citations({"blockquote", attrs, children, _} = item, acc) do
+    case Enum.find(attrs, &(elem(&1, 0) == "cite")) do
+      nil ->
+        {item, acc}
+
+      {"cite", href} ->
+        reversed_children = Enum.reverse(children)
+
+        new_children =
+          case hd(reversed_children) do
+            {"p", _, content, _} ->
+              [blockquote_footer(href, content) | tl(reversed_children)]
+
+            _ ->
+              [blockquote_footer(href, href) | reversed_children]
+          end
+
+        {{"blockquote", attrs, Enum.reverse(new_children), %{}}, acc}
+    end
+  end
+
+  defp convert_citations(item, acc),
+    do: {item, acc}
 
   defp make_section({"h2", _, _, _} = item, acc),
     do: {wrap_in(Enum.reverse(acc), "section"), [item]}
@@ -49,4 +76,13 @@ defmodule Tuftemark do
 
   defp last_section({ast, acc}),
     do: ast ++ wrap_in(Enum.reverse(acc), "section")
+
+  defp wrap_in(ast, tagname),
+    do: [{tagname, [], ast, %{}}]
+
+  defp blockquote_footer(href, content) do
+    anchor = {"a", [{"href", href}], List.wrap(content), %{}}
+
+    {"footer", [], [anchor], %{}}
+  end
 end

@@ -93,4 +93,80 @@ defmodule TuftemarkTest do
 
     assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
   end
+
+  describe "blockquotes" do
+    # @tag :skip
+    test "converts last p tag to footer+a in a blockquote when a cite attribute set" do
+      markdown = """
+      > Lorem ipsum sit dolor amet.
+      >
+      > Id auctor turpis tortor.
+      >
+      > Famous Rome Citizens
+      {:cite="https://example.com"}
+      """
+
+      expected = """
+      <article>
+        <section>
+          <blockquote cite="https://example.com">
+            <p>Lorem ipsum sit dolor amet.</p>
+            <p>Id auctor turpis tortor.</p>
+            <footer><a href="https://example.com">Famous Rome Citizens</a></footer>
+          </blockquote>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+
+    # @tag :skip
+    test "adds a footer with link in a blockquote when a cite attribute set and last element is not p tag" do
+      markdown = """
+      > Per porttitor blandit.
+      >
+      > - some
+      > - list
+      > - here
+      {:cite="https://example.com"}
+      """
+
+      expected = """
+      <article>
+        <section>
+          <blockquote cite="https://example.com">
+            <p>Per porttitor blandit.</p>
+            <ul><li>some</li><li>list</li><li>here</li></ul>
+            <footer><a href="https://example.com">https://example.com</a></footer>
+          </blockquote>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+
+    # @tag :skip
+    test "leaves blockquote as it is when it's not citation" do
+      markdown = """
+      > Consequat sociosqu aptent nostra.
+      >
+      > Not So Famous Citizens of Rome
+      """
+
+      expected = """
+      <article>
+        <section>
+          <blockquote>
+            <p>Consequat sociosqu aptent nostra.</p>
+            <p>Not So Famous Citizens of Rome</p>
+          </blockquote>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+  end
 end
