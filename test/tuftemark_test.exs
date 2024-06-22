@@ -94,6 +94,29 @@ defmodule TuftemarkTest do
     assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
   end
 
+  describe "footnotes" do
+    # @tag :skip
+    test "..." do
+      markdown = """
+      In print, Tufte has used the proprietary Monotype Bembo[^bembo] font.
+
+      [^bembo]: See Tufte’s comment in the [Tufte book fonts](http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0000Vt) thread.
+      """
+
+      expected = """
+      <article>
+        <section>
+          <p>In print, Tufte has used the proprietary Monotype Bembo<label for="sn-bembo" class="margin-toggle sidenote-number"></label>
+          <input type="checkbox" id="sn-bembo" class="margin-toggle">
+          <span class="sidenote">See Tufte’s comment in the <a href="http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0000Vt">Tufte book fonts</a> thread.</span> font.</p>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+  end
+
   describe "blockquotes" do
     # @tag :skip
     test "converts last p tag to footer+a in a blockquote when a cite attribute set" do

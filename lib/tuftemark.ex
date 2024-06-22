@@ -6,6 +6,7 @@ defmodule Tuftemark do
 
   - the whole post must be wrapped in `<article>` tag
   - content must be split into `<section>`s around every H2 tag
+  - footnotes must be converted into margin notes (compatible with the CSS)
 
   The `as_html!/2` method is trying to apply all the given transformation to the originally parsed AST,
   so we get applicable HTML output in the end.
@@ -24,6 +25,7 @@ defmodule Tuftemark do
   """
 
   alias Earmark.{Options, Parser, Restructure, Transform}
+  alias Tuftemark.{Footnotes}
 
   @doc """
   Expects a [GitHub Flavored Markdown](https://github.github.com/gfm/) as first argument and list of options
@@ -36,6 +38,7 @@ defmodule Tuftemark do
     options = Options.make_options!(opts)
 
     ast
+    |> Footnotes.process()
     |> Restructure.walk_and_modify_ast([], &convert_citations/2)
     |> elem(0)
     |> Restructure.walk_and_modify_ast([], &make_section/2)
