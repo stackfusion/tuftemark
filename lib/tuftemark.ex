@@ -24,8 +24,8 @@ defmodule Tuftemark do
   See all such examples in the TuftemarkTest suite.
   """
 
-  alias Earmark.{Options, Parser, Restructure, Transform}
-  alias Tuftemark.{Citations, Footnotes, Utils}
+  alias Earmark.{Options, Parser, Transform}
+  alias Tuftemark.{Citations, Footnotes, Sections, Utils}
 
   @doc """
   Expects a [GitHub Flavored Markdown](https://github.github.com/gfm/) as first argument and list of options
@@ -40,18 +40,8 @@ defmodule Tuftemark do
     ast
     |> Footnotes.process()
     |> Citations.process()
-    |> Restructure.walk_and_modify_ast([], &make_section/2)
-    |> last_section()
+    |> Sections.process()
     |> Utils.wrap_in("article")
     |> Transform.transform(options)
   end
-
-  defp make_section({"h2", _, _, _} = item, acc),
-    do: {Utils.wrap_in(Enum.reverse(acc), "section"), [item]}
-
-  defp make_section(item, acc),
-    do: {[], [item | acc]}
-
-  defp last_section({ast, acc}),
-    do: ast ++ Utils.wrap_in(Enum.reverse(acc), "section")
 end
