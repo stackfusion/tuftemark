@@ -25,7 +25,7 @@ defmodule Tuftemark do
   """
 
   alias Earmark.{Options, Parser, Restructure, Transform}
-  alias Tuftemark.{Footnotes}
+  alias Tuftemark.{Citations, Footnotes}
 
   @doc """
   Expects a [GitHub Flavored Markdown](https://github.github.com/gfm/) as first argument and list of options
@@ -39,37 +39,12 @@ defmodule Tuftemark do
 
     ast
     |> Footnotes.process()
-    |> Restructure.walk_and_modify_ast([], &convert_citations/2)
-    |> elem(0)
+    |> Citations.process()
     |> Restructure.walk_and_modify_ast([], &make_section/2)
     |> last_section()
     |> wrap_in("article")
     |> Transform.transform(options)
   end
-
-  defp convert_citations({"blockquote", attrs, children, _} = item, acc) do
-    case Enum.find(attrs, &(elem(&1, 0) == "cite")) do
-      nil ->
-        {item, acc}
-
-      {"cite", href} ->
-        reversed_children = Enum.reverse(children)
-
-        new_children =
-          case hd(reversed_children) do
-            {"p", _, content, _} ->
-              [blockquote_footer(href, content) | tl(reversed_children)]
-
-            _ ->
-              [blockquote_footer(href, href) | reversed_children]
-          end
-
-        {{"blockquote", attrs, Enum.reverse(new_children), %{}}, acc}
-    end
-  end
-
-  defp convert_citations(item, acc),
-    do: {item, acc}
 
   defp make_section({"h2", _, _, _} = item, acc),
     do: {wrap_in(Enum.reverse(acc), "section"), [item]}
@@ -82,10 +57,4 @@ defmodule Tuftemark do
 
   defp wrap_in(ast, tagname),
     do: [{tagname, [], ast, %{}}]
-
-  defp blockquote_footer(href, content) do
-    anchor = {"a", [{"href", href}], List.wrap(content), %{}}
-
-    {"footer", [], [anchor], %{}}
-  end
 end
