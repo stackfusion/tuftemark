@@ -25,7 +25,7 @@ defmodule Tuftemark do
   """
 
   alias Earmark.{Options, Parser, Restructure, Transform}
-  alias Tuftemark.{Citations, Footnotes}
+  alias Tuftemark.{Citations, Footnotes, Utils}
 
   @doc """
   Expects a [GitHub Flavored Markdown](https://github.github.com/gfm/) as first argument and list of options
@@ -42,19 +42,16 @@ defmodule Tuftemark do
     |> Citations.process()
     |> Restructure.walk_and_modify_ast([], &make_section/2)
     |> last_section()
-    |> wrap_in("article")
+    |> Utils.wrap_in("article")
     |> Transform.transform(options)
   end
 
   defp make_section({"h2", _, _, _} = item, acc),
-    do: {wrap_in(Enum.reverse(acc), "section"), [item]}
+    do: {Utils.wrap_in(Enum.reverse(acc), "section"), [item]}
 
   defp make_section(item, acc),
     do: {[], [item | acc]}
 
   defp last_section({ast, acc}),
-    do: ast ++ wrap_in(Enum.reverse(acc), "section")
-
-  defp wrap_in(ast, tagname),
-    do: [{tagname, [], ast, %{}}]
+    do: ast ++ Utils.wrap_in(Enum.reverse(acc), "section")
 end
