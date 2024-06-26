@@ -94,20 +94,40 @@ defmodule TuftemarkTest do
     assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
   end
 
-  describe "footnotes" do
-    # @tag :skip
-    test "..." do
+  describe "sidenotes" do
+    test "converts ordinary footnotes into marginal notes (without numbering)" do
       markdown = """
-      In print, Tufte has used the proprietary Monotype Bembo[^bembo] font.
+      Dictum vestibulum hac auctor[^hac-auctor] dictumst.
 
-      [^bembo]: See Tufte’s comment in the [Tufte book fonts](http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0000Vt) thread.
+      [^hac-auctor]: Pulvinar dui pellentesque amet lacus.
       """
 
       expected = """
       <article>
         <section>
-          <p>In print, Tufte has used the proprietary Monotype Bembo<label for="sn-bembo" class="margin-toggle sidenote-number"></label>
-          <input type="checkbox" id="sn-bembo" class="margin-toggle">
+          <p>Dictum vestibulum hac auctor<label for="mn-hac-auctor" class="margin-toggle"></label>
+          <input type="checkbox" id="mn-hac-auctor" class="margin-toggle">
+          <span class="marginnote">Pulvinar dui pellentesque amet lacus.</span> dictumst.</p>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+
+    # @tag :skip
+    test "converts special footnotes (dash-prefixed) into sidenotes (with numbering)" do
+      markdown = """
+      In print, Tufte has used the proprietary Monotype Bembo[^-bembo] font.
+
+      [^-bembo]: See Tufte’s comment in the [Tufte book fonts](http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0000Vt) thread.
+      """
+
+      expected = """
+      <article>
+        <section>
+          <p>In print, Tufte has used the proprietary Monotype Bembo<label for="sn--bembo" class="margin-toggle sidenote-number"></label>
+          <input type="checkbox" id="sn--bembo" class="margin-toggle">
           <span class="sidenote">See Tufte’s comment in the <a href="http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0000Vt">Tufte book fonts</a> thread.</span> font.</p>
         </section>
       </article>
