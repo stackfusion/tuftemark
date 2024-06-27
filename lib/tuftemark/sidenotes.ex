@@ -12,17 +12,18 @@ defmodule Tuftemark.Sidenotes do
   defp find_and_clean(ast) do
     Restructure.walk_and_modify_ast(ast, %{}, fn
       {"p", _, children, _} = item, acc ->
-        paragraph = hd(children)
+        # some paragraphs start not with a text, but with an image or other tag
+        # this is not what we're looking for here, we need only: `[^note]: ...`
+        with maybe_text <- hd(children),
+             true <- is_binary(maybe_text),
+             [note_id, note_clean] <-
+               Regex.run(~r/^\[\^(.+)\]: (.*)/, maybe_text, capture: :all_but_first) do
+          new_children = List.update_at(children, 0, fn _ -> note_clean end)
+          new_item = put_elem(item, 2, new_children)
 
-        case Regex.run(~r/^\[\^(.+)\]: (.*)/, paragraph, capture: :all_but_first) do
-          nil ->
-            {item, acc}
-
-          [note_id, note_clean] ->
-            new_children = List.update_at(children, 0, fn _ -> note_clean end)
-            new_item = put_elem(item, 2, new_children)
-
-            {[], Map.put(acc, note_id, new_item)}
+          {[], Map.put(acc, note_id, new_item)}
+        else
+          _ -> {item, acc}
         end
 
       item, acc ->
