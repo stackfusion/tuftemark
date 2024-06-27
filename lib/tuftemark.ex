@@ -25,7 +25,7 @@ defmodule Tuftemark do
   """
 
   alias Earmark.{Options, Parser, Transform}
-  alias Tuftemark.{Citations, Sections, Sidenotes, Utils}
+  alias Tuftemark.{Citations, Figures, Sections, Sidenotes, Utils}
 
   @doc """
   Expects a [GitHub Flavored Markdown](https://github.github.com/gfm/) as first argument and list of options
@@ -40,6 +40,7 @@ defmodule Tuftemark do
     ast
     |> Sidenotes.process()
     |> Citations.process()
+    |> Figures.process()
     |> Sections.process()
     |> Utils.wrap_in("article")
     |> Transform.transform(options)

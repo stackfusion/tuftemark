@@ -137,6 +137,36 @@ defmodule TuftemarkTest do
     end
   end
 
+  describe "figures" do
+    @tag :focus
+    test "converts ordinary image-paragraphs into figures layout" do
+      markdown = """
+      Magnis montes dignissim.
+
+      ![A lorem ipsum-like image](https://picsum.photos/200/300)
+
+      From the Internet, _Picsum.photos_, size 200x300.
+      {:role="caption"}
+      """
+
+      expected = """
+      <article>
+        <section>
+          <p>Magnis montes dignissim.</p>
+          <figure>
+            <label for="mn-https-picsum-photos-200-300" class="margin-toggle">⊕</label>
+            <input type="checkbox" id="mn-https-picsum-photos-200-300" class="margin-toggle">
+            <span class="marginnote" role="caption">From the Internet, <em>Picsum.photos</em>, size 200x300.</span>
+            <img src="https://picsum.photos/200/300" alt="A lorem ipsum-like image">
+          </figure>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+  end
+
   describe "blockquotes" do
     # @tag :skip
     test "converts last p tag to footer+a in a blockquote when a cite attribute set" do
