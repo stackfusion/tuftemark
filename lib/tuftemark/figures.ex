@@ -1,5 +1,6 @@
 defmodule Tuftemark.Figures do
-  alias Earmark.{AstTools, Restructure}
+  alias Earmark.Restructure
+  alias Tuftemark.Utils
 
   def process(ast) do
     ast
@@ -25,17 +26,9 @@ defmodule Tuftemark.Figures do
   defp to_figure({"p", attrs, children, annotations}, {_, _, [image_tag], _}) do
     img_src = image_tag |> elem(1) |> Enum.find(&(elem(&1, 0) == "src")) |> elem(1)
     img_id = Regex.scan(~r/(\w+)/, img_src, capture: :all_but_first) |> Enum.join("-")
-    for_attr = "mn-#{img_id}"
 
-    label =
-      {"label", [{"for", for_attr}, {"class", "margin-toggle"}], ["⊕"], %{}}
+    sidenote = Utils.sidenote(img_id, attrs, children, annotations)
 
-    input =
-      {"input", [{"type", "checkbox"}, {"id", for_attr}, {"class", "margin-toggle"}], [], %{}}
-
-    note =
-      {"span", AstTools.merge_atts(attrs, class: "marginnote"), children, annotations}
-
-    [{"figure", [], [label, input, note, image_tag], %{}}]
+    [{"figure", [], sidenote ++ [image_tag], %{}}]
   end
 end

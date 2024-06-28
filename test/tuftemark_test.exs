@@ -105,7 +105,7 @@ defmodule TuftemarkTest do
       expected = """
       <article>
         <section>
-          <p>Dictum vestibulum hac auctor<label for="mn-hac-auctor" class="margin-toggle"></label>
+          <p>Dictum vestibulum hac auctor<label for="mn-hac-auctor" class="margin-toggle">⊕</label>
           <input type="checkbox" id="mn-hac-auctor" class="margin-toggle">
           <span class="marginnote">Pulvinar dui pellentesque amet lacus.</span> dictumst.</p>
         </section>

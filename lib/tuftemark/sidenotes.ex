@@ -1,5 +1,6 @@
 defmodule Tuftemark.Sidenotes do
-  alias Earmark.{AstTools, Restructure, Transform}
+  alias Earmark.{Restructure, Transform}
+  alias Tuftemark.Utils
 
   def process(ast) do
     with {cleaner_ast, footnotes} <- find_and_clean(ast),
@@ -35,25 +36,10 @@ defmodule Tuftemark.Sidenotes do
   defp convert(footnotes) do
     footnotes
     |> Enum.map(fn {key, {_, attrs, children, annotations}} ->
-      is_sidenote = String.starts_with?(key, "-")
+      is_numbered = String.starts_with?(key, "-")
+      sidenote = Utils.sidenote(key, attrs, children, annotations, is_numbered)
 
-      {for_attr, label_class, note_class} =
-        if is_sidenote do
-          {"sn-#{key}", "margin-toggle sidenote-number", "sidenote"}
-        else
-          {"mn-#{key}", "margin-toggle", "marginnote"}
-        end
-
-      label =
-        {"label", [{"for", for_attr}, {"class", label_class}], [], %{}}
-
-      input =
-        {"input", [{"type", "checkbox"}, {"id", for_attr}, {"class", "margin-toggle"}], [], %{}}
-
-      note =
-        {"span", AstTools.merge_atts(attrs, class: note_class), children, annotations}
-
-      {key, [label, input, note]}
+      {key, sidenote}
     end)
     |> Enum.into(%{})
   end
