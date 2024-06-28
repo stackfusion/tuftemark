@@ -1,12 +1,12 @@
 defmodule TuftemarkTest do
-  # HINT: fswatch lib test | mix test --listen-on-stdin --exclude skip
+  # HINT: fswatch lib test | mix test --listen-on-stdin --only focus
 
   use ExUnit.Case, async: true
 
   defp compact_html(input),
     do: input |> String.replace(~r/>\s+</, "><") |> String.replace("\n", "")
 
-  # @tag :skip
+  # @tag :focus
   test "wrap whole content in an article tag" do
     markdown = """
     # Lorem
@@ -34,7 +34,7 @@ defmodule TuftemarkTest do
     assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
   end
 
-  # @tag :skip
+  # @tag :focus
   test "split content into sections around every h2 tag" do
     markdown = """
     # Class vehicula
@@ -73,7 +73,7 @@ defmodule TuftemarkTest do
     assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
   end
 
-  # @tag :skip
+  # @tag :focus
   test "respects Kramdown syntax for sans class of a paragraph" do
     markdown = """
     If you prefer sans-serifs, use the `sans` class. It relies on Gill Sans, Tufte’s sans-serif font of choice.
@@ -95,6 +95,7 @@ defmodule TuftemarkTest do
   end
 
   describe "sidenotes" do
+    # @tag :focus
     test "converts ordinary footnotes into marginal notes (without numbering)" do
       markdown = """
       Dictum vestibulum hac auctor[^hac-auctor] dictumst.
@@ -115,7 +116,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :skip
+    # @tag :focus
     test "converts special footnotes (dash-prefixed) into sidenotes (with numbering)" do
       markdown = """
       In print, Tufte has used the proprietary Monotype Bembo[^-bembo] font.
@@ -138,7 +139,7 @@ defmodule TuftemarkTest do
   end
 
   describe "figures" do
-    @tag :focus
+    # @tag :focus
     test "converts ordinary image-paragraphs into figures layout" do
       markdown = """
       Magnis montes dignissim.
@@ -168,7 +169,7 @@ defmodule TuftemarkTest do
   end
 
   describe "blockquotes" do
-    # @tag :skip
+    # @tag :focus
     test "converts last p tag to footer+a in a blockquote when a cite attribute set" do
       markdown = """
       > Lorem ipsum sit dolor amet.
@@ -194,7 +195,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :skip
+    # @tag :focus
     test "adds a footer with link in a blockquote when a cite attribute set and last element is not p tag" do
       markdown = """
       > Per porttitor blandit.
@@ -220,7 +221,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :skip
+    # @tag :focus
     test "leaves blockquote as it is when it's not citation" do
       markdown = """
       > Consequat sociosqu aptent nostra.
