@@ -45,4 +45,36 @@ defmodule Tuftemark do
     |> Utils.wrap_in("article")
     |> Transform.transform(options)
   end
+
+  @doc """
+  Processes files on a disk, converts Markdown to HTML using `as_html!/2`.
+
+  ## Usage Example
+
+  ```console
+  mix run -e "Tuftemark.convert!()" -- example.md example.html
+  ```
+  """
+  def convert!() do
+    [input_file, output_file] = System.argv()
+
+    html_content = input_file |> File.read!() |> as_html!(compact_output: true)
+
+    html_full = """
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8"/>
+        <title>Tufte CSS</title>
+        <link rel="stylesheet" href="tufte.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+      </head>
+      <body>
+        #{html_content}
+      </body>
+    </html>
+    """
+
+    File.write!(output_file, html_full)
+  end
 end
