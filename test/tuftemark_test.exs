@@ -222,7 +222,32 @@ defmodule TuftemarkTest do
     end
 
     # @tag :focus
-    test "leaves blockquote as it is when it's not citation" do
+    test "converts a blockquote into epigraph when it has such a role" do
+      markdown = """
+      > For a successful technology, reality must take precedence over public relations, for Nature cannot be fooled.
+      >
+      > Richard P. Feynman, _“What Do You Care What Other People Think?”_
+      {:role="epigraph"}
+      """
+
+      expected = """
+      <article>
+        <section>
+          <div class="epigraph">
+            <blockquote>
+              <p>For a successful technology, reality must take precedence over public relations, for Nature cannot be fooled.</p>
+              <footer>Richard P. Feynman, <em>“What Do You Care What Other People Think?”</em></footer>
+            </blockquote>
+          </div>
+        </section>
+      </article>
+      """
+
+      assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
+    end
+
+    # @tag :focus
+    test "leaves blockquote as it is when it's nothing specific" do
       markdown = """
       > Consequat sociosqu aptent nostra.
       >
