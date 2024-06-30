@@ -210,7 +210,7 @@ defmodule TuftemarkTest do
   ##############################################################################
 
   describe "figures" do
-    # @tag :focus
+    @tag :focus
     test "converts regular images by replacing parent `p` tag with the `figure` one" do
       markdown = """
       Fusce sed Lorem.
@@ -235,7 +235,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
+    @tag :focus
     test "converts fullwidth images when .fullwidth class set to the image" do
       markdown = """
       Nisi laoreet ornare.
@@ -262,7 +262,7 @@ defmodule TuftemarkTest do
     end
 
     # TODO: try to handle captions somehow, maybe to render them in a special way after the image...
-    # @tag :focus
+    @tag :focus
     test "converts fullwidth images and ignores caption (as we don't have a place where to put it)" do
       markdown = """
       Elit eget elit habitant.
@@ -291,7 +291,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
+    @tag :focus
     test "converts regular images with captions into a figure with marginnote layout" do
       markdown = """
       Magnis montes dignissim.
@@ -322,7 +322,7 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
+    @tag :focus
     test "converts marginal images with a caption and captures the next usual paragraph of text" do
       markdown = """
       Ante lacus sociosqu litora.
@@ -346,7 +346,9 @@ defmodule TuftemarkTest do
             <label for="mn-https-picsum-photos-100-100" class="margin-toggle">⊕</label>
             <input type="checkbox" id="mn-https-picsum-photos-100-100" class="margin-toggle">
             <span class="marginnote">
-              <img src="https://picsum.photos/100/100" alt="Square image">The Squared One, <em>Picsum.photos</em>, size 100x100.</span>Torquent montes tincidunt.</p>
+              <img src="https://picsum.photos/100/100" alt="Square image">The Squared One, <em>Picsum.photos</em>, size 100x100.</span>
+          </p>
+          <p>Torquent montes tincidunt.</p>
           <p>Pellentesque himenaeos aliquet.</p>
         </section>
       </article>
@@ -355,8 +357,8 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
-    test "converts marginal images without a caption and captures the next usual paragraph of text" do
+    @tag :focus
+    test "converts marginal images without a caption" do
       markdown = """
       Vel sapien ligula senectus.
 
@@ -364,21 +366,20 @@ defmodule TuftemarkTest do
       {:.marginal}
 
       Aliquam elit ultricies etiam congue.
-
-      Sodales curabitur platea lacinia risus praesent.
       """
 
       expected = """
       <article>
         <section>
-          <p>Ante lacus sociosqu litora.</p>
+          <p>Vel sapien ligula senectus.</p>
           <p>
             <label for="mn-https-picsum-photos-300-100" class="margin-toggle">⊕</label>
-            <input type="checkbox" id="mn-https-picsum-photos-200-300" class="margin-toggle">
+            <input type="checkbox" id="mn-https-picsum-photos-300-100" class="margin-toggle">
             <span class="marginnote">
               <img src="https://picsum.photos/300/100" alt="A tall picture">
-            </span>Aliquam elit ultricies etiam congue.</p>
-          <p>Sodales curabitur platea lacinia risus praesent.</p>
+            </span>
+          </p>
+          <p>Aliquam elit ultricies etiam congue.</p>
         </section>
       </article>
       """

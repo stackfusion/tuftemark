@@ -126,13 +126,13 @@ Figures should try to use the `figure` element, which by default are constrained
 ![Exports and Imports to and from Denmark & Norway from 1700 to 1780](https://edwardtufte.github.io/tufte-css/img/exports-imports.png)
 
 From Edward Tufte, _Visual Display of Quantitative Information_, page 92.
-{:role="caption"}
+{:.caption}
 
 ![Image of a Rhinoceros](https://edwardtufte.github.io/tufte-css/img/rhino.png)
-{:role="marginal"}
+{:.marginal}
 
 F.J. Cole, “The History of Albrecht Dürer’s Rhinoceros in Zooological Literature,” _Science, Medicine, and History: Essays on the Evolution of Scientific Thought and Medical Practice_ (London, 1953), ed. E. Ashworth Underwood, 337-356. From page 71 of Edward Tufte’s _Visual Explanations_.
-{:role="caption"}
+{:.caption}
 
 But tight integration of graphics with text is central to Tufte’s work even when those graphics are ancillary to the main body of a text. In many of those cases, a margin figure may be most appropriate. To place figures in the margin, just wrap an image (or whatever) in a margin note inside a `p` tag, as seen to the right of this paragraph.
 
@@ -193,7 +193,6 @@ This is an ImageQuilt surveying Chinese calligraphy, placed in a full-width figu
 Here is an ImageQuilt of 47 animal sounds over and over, in a figure constrained to the main text region. This quilt has ragged edges, but the image itself is of course still rectangular.
 
 ![Image of animal sounds](https://edwardtufte.github.io/tufte-css/img/imagequilt-animal-sounds.png)
-{:.no-caption}
 
 ## Epilogue
 
