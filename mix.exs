@@ -1,27 +1,49 @@
 defmodule Tuftemark.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @url "https://github.com/stackfusion/tuftemark"
+
   def project do
     [
       app: :tuftemark,
-      version: "0.1.0",
+      deps: deps(),
+      description:
+        "Markdown converter tailored for Edward Tufte's handout format and ready to be used with Tufte CSS",
+      docs: docs(),
       elixir: "~> 1.16",
-      start_permanent: Mix.env() == :prod,
-      deps: deps()
+      name: "Tuftemark",
+      package: package(),
+      version: @version
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:earmark, "~> 1.4.46"}
+      {:earmark, "~> 1.4"},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
+  end
+
+  defp docs do
+    [
+      main: "Tuftemark",
+      source_ref: "v#{@version}",
+      source_url: @url
+    ]
+  end
+
+  defp package do
+    %{
+      licenses: ["MIT"],
+      maintainers: ["Sergey Kuznetsov"],
+      links: %{"GitHub" => @url}
+    }
   end
 end
