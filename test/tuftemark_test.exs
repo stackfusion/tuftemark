@@ -11,7 +11,6 @@ defmodule TuftemarkTest do
   ##############################################################################
 
   describe "basics, general" do
-    # @tag :focus
     test "wrap whole content in an article tag" do
       markdown = """
       # Lorem
@@ -39,7 +38,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "split content into sections around every h2 tag" do
       markdown = """
       # Class vehicula
@@ -78,7 +76,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "respects Kramdown syntax for sans class of a paragraph" do
       markdown = """
       If you prefer sans-serifs, use the `sans` class. It relies on Gill Sans, Tufte’s sans-serif font of choice.
@@ -105,7 +102,6 @@ defmodule TuftemarkTest do
   ##############################################################################
 
   describe "blockquotes" do
-    # @tag :focus
     test "converts last p tag to footer+a in a blockquote when a cite attribute set" do
       markdown = """
       > Lorem ipsum sit dolor amet.
@@ -131,7 +127,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "adds a footer with link in a blockquote when a cite attribute set and last element is not p tag" do
       markdown = """
       > Per porttitor blandit.
@@ -157,7 +152,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "converts a blockquote into epigraph when it has such a class" do
       markdown = """
       > For a successful technology, reality must take precedence over public relations, for Nature cannot be fooled.
@@ -182,7 +176,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "leaves blockquote as it is when it's nothing specific" do
       markdown = """
       > Consequat sociosqu aptent nostra.
@@ -210,7 +203,6 @@ defmodule TuftemarkTest do
   ##############################################################################
 
   describe "figures" do
-    @tag :focus
     test "converts regular images by replacing parent `p` tag with the `figure` one" do
       markdown = """
       Fusce sed Lorem.
@@ -235,7 +227,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    @tag :focus
     test "converts fullwidth images when .fullwidth class set to the image" do
       markdown = """
       Nisi laoreet ornare.
@@ -262,7 +253,6 @@ defmodule TuftemarkTest do
     end
 
     # TODO: try to handle captions somehow, maybe to render them in a special way after the image...
-    @tag :focus
     test "converts fullwidth images and ignores caption (as we don't have a place where to put it)" do
       markdown = """
       Elit eget elit habitant.
@@ -291,7 +281,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    @tag :focus
     test "converts regular images with captions into a figure with marginnote layout" do
       markdown = """
       Magnis montes dignissim.
@@ -322,7 +311,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    @tag :focus
     test "converts marginal images with a caption and captures the next usual paragraph of text" do
       markdown = """
       Ante lacus sociosqu litora.
@@ -357,7 +345,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    @tag :focus
     test "converts marginal images without a caption" do
       markdown = """
       Vel sapien ligula senectus.
@@ -393,7 +380,6 @@ defmodule TuftemarkTest do
   ##############################################################################
 
   describe "sidenotes" do
-    # @tag :focus
     test "converts ordinary footnotes into marginal notes (without numbering)" do
       markdown = """
       Dictum vestibulum hac auctor[^hac-auctor] dictumst.
@@ -414,7 +400,6 @@ defmodule TuftemarkTest do
       assert compact_html(expected) == Tuftemark.as_html!(markdown, compact_output: true)
     end
 
-    # @tag :focus
     test "converts special footnotes (dash-prefixed) into sidenotes (with numbering)" do
       markdown = """
       In print, Tufte has used the proprietary Monotype Bembo[^-bembo] font.
