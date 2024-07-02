@@ -8,11 +8,11 @@ defmodule Tuftemark.Blockquotes do
   end
 
   defp find_and_replace({"blockquote", attrs, children, annotations} = item, acc) do
-    case Enum.find(attrs, &(elem(&1, 0) == "cite" || elem(&1, 0) == "role")) do
+    case Enum.find(attrs, &(elem(&1, 0) == "cite" || elem(&1, 0) == "class")) do
       {"cite", href} ->
         {citation(href, attrs, children, annotations), acc}
 
-      {"role", "epigraph"} ->
+      {"class", "epigraph"} ->
         {epigraph(attrs, children, annotations), acc}
 
       _otherwise ->
@@ -43,7 +43,7 @@ defmodule Tuftemark.Blockquotes do
     {"p", _, footer_content, _} = hd(reversed_children)
     footer = {"footer", [], footer_content, %{}}
 
-    new_attrs = Enum.reject(attrs, &(elem(&1, 0) == "role"))
+    new_attrs = Enum.reject(attrs, &(elem(&1, 0) == "class"))
     new_children = Enum.reverse([footer | tl(reversed_children)])
 
     blockquote = {"blockquote", new_attrs, new_children, annotations}

@@ -158,12 +158,12 @@ defmodule TuftemarkTest do
     end
 
     # @tag :focus
-    test "converts a blockquote into epigraph when it has such a role" do
+    test "converts a blockquote into epigraph when it has such a class" do
       markdown = """
       > For a successful technology, reality must take precedence over public relations, for Nature cannot be fooled.
       >
       > Richard P. Feynman, _“What Do You Care What Other People Think?”_
-      {:role="epigraph"}
+      {:.epigraph}
       """
 
       expected = """
