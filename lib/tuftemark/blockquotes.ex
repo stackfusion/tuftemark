@@ -1,5 +1,5 @@
 defmodule Tuftemark.Blockquotes do
-  alias Earmark.Restructure
+  alias Earmark.{AstTools, Restructure}
 
   def process(ast) do
     ast
@@ -7,37 +7,38 @@ defmodule Tuftemark.Blockquotes do
     |> elem(0)
   end
 
-  defp find_and_replace({"blockquote", attrs, children, annotations} = item, acc) do
-    case Enum.find(attrs, &(elem(&1, 0) == "cite" || elem(&1, 0) == "class")) do
-      {"cite", href} ->
-        {citation(href, attrs, children, annotations), acc}
+  defp find_and_replace({"blockquote", _, _, _} = item, acc) do
+    is_citation = not is_nil(AstTools.find_att_in_node(item, "cite"))
+    is_epigraph = AstTools.find_att_in_node(item, "class", "") |> String.contains?("epigraph")
 
-      {"class", "epigraph"} ->
-        {epigraph(attrs, children, annotations), acc}
-
-      _otherwise ->
-        {item, acc}
+    cond do
+      is_citation -> {to_citation(item), acc}
+      is_epigraph -> {to_epigraph(item), acc}
+      true -> {item, acc}
     end
   end
 
   defp find_and_replace(item, acc), do: {item, acc}
 
-  defp citation(href, attrs, children, annotations) do
+  defp to_citation({"blockquote", attrs, children, annotations} = item) do
     reversed_children = Enum.reverse(children)
+
+    # of course, we cannot guarantee that there will be a URL, but we assume so...
+    cite_href = AstTools.find_att_in_node(item, "cite")
 
     new_children =
       case hd(reversed_children) do
         {"p", _, content, _} ->
-          [blockquote_footer(href, content) | tl(reversed_children)]
+          [blockquote_footer(cite_href, content) | tl(reversed_children)]
 
         _ ->
-          [blockquote_footer(href, href) | reversed_children]
+          [blockquote_footer(cite_href, cite_href) | reversed_children]
       end
 
     {"blockquote", attrs, Enum.reverse(new_children), annotations}
   end
 
-  defp epigraph(attrs, children, annotations) do
+  defp to_epigraph({"blockquote", attrs, children, annotations}) do
     reversed_children = Enum.reverse(children)
 
     {"p", _, footer_content, _} = hd(reversed_children)
