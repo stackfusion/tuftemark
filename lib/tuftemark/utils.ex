@@ -24,7 +24,7 @@ defmodule Tuftemark.Utils do
   The main difference is that for sidenotes we must pass truthy `is_numbered`
   to get automatic numbering for them. Marginal notes shall not be numbered.
   """
-  def sidenote(key, attrs, children, annotations, is_numbered \\ false) do
+  def sidenote(key, attrs, children, meta, is_numbered \\ false) do
     {for_attr, label_class, label_anchor, note_class} =
       if is_numbered do
         {"sn-#{key}", "margin-toggle sidenote-number", "", "sidenote"}
@@ -39,7 +39,7 @@ defmodule Tuftemark.Utils do
       {"input", [{"type", "checkbox"}, {"id", for_attr}, {"class", "margin-toggle"}], [], %{}}
 
     note =
-      {"span", AstTools.merge_atts(attrs, class: note_class), children, annotations}
+      {"span", AstTools.merge_atts(attrs, class: note_class), List.wrap(children), meta}
 
     [label, input, note]
   end
