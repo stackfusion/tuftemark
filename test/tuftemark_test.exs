@@ -382,7 +382,7 @@ defmodule TuftemarkTest do
   describe "sidenotes" do
     test "converts ordinary footnotes into marginal notes (without numbering)" do
       markdown = """
-      Dictum vestibulum hac auctor[^hac-auctor] dictumst.
+      **Dictum vestibulum** hac auctor[^hac-auctor] dictumst.
 
       [^hac-auctor]: Pulvinar dui pellentesque amet lacus.
       """
@@ -390,7 +390,7 @@ defmodule TuftemarkTest do
       expected = """
       <article>
         <section>
-          <p>Dictum vestibulum hac auctor<label for="mn-hac-auctor" class="margin-toggle">⊕</label>
+          <p><strong>Dictum vestibulum</strong> hac auctor<label for="mn-hac-auctor" class="margin-toggle">⊕</label>
           <input type="checkbox" id="mn-hac-auctor" class="margin-toggle">
           <span class="marginnote">Pulvinar dui pellentesque amet lacus.</span> dictumst.</p>
         </section>

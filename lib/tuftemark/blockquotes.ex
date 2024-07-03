@@ -1,30 +1,27 @@
 defmodule Tuftemark.Blockquotes do
-  alias Earmark.{AstTools, Restructure}
+  alias Earmark.{AstTools, Transform}
 
-  def process(ast) do
-    ast
-    |> Restructure.walk_and_modify_ast([], &find_and_replace/2)
-    |> elem(0)
-  end
+  def process(ast),
+    do: Transform.map_ast(ast, &maybe_augment/1, true)
 
-  defp find_and_replace({"blockquote", _, _, _} = item, acc) do
-    is_citation = not is_nil(AstTools.find_att_in_node(item, "cite"))
-    is_epigraph = AstTools.find_att_in_node(item, "class", "") |> String.contains?("epigraph")
+  defp maybe_augment({"blockquote", _, _, _} = node) do
+    is_citation = not is_nil(AstTools.find_att_in_node(node, "cite"))
+    is_epigraph = AstTools.find_att_in_node(node, "class", "") |> String.contains?("epigraph")
 
     cond do
-      is_citation -> {to_citation(item), acc}
-      is_epigraph -> {to_epigraph(item), acc}
-      true -> {item, acc}
+      is_citation -> {:replace, to_citation(node)}
+      is_epigraph -> {:replace, to_epigraph(node)}
+      true -> node
     end
   end
 
-  defp find_and_replace(item, acc), do: {item, acc}
+  defp maybe_augment(node), do: node
 
-  defp to_citation({"blockquote", attrs, children, annotations} = item) do
+  defp to_citation({"blockquote", attrs, children, meta} = node) do
     reversed_children = Enum.reverse(children)
 
-    # of course, we cannot guarantee that there will be a URL, but we assume so...
-    cite_href = AstTools.find_att_in_node(item, "cite")
+    # we cannot guarantee that there will be a URL, but we assume so...
+    cite_href = AstTools.find_att_in_node(node, "cite")
 
     new_children =
       case hd(reversed_children) do
@@ -35,10 +32,10 @@ defmodule Tuftemark.Blockquotes do
           [blockquote_footer(cite_href, cite_href) | reversed_children]
       end
 
-    {"blockquote", attrs, Enum.reverse(new_children), annotations}
+    {"blockquote", attrs, Enum.reverse(new_children), meta}
   end
 
-  defp to_epigraph({"blockquote", attrs, children, annotations}) do
+  defp to_epigraph({"blockquote", attrs, children, meta}) do
     reversed_children = Enum.reverse(children)
 
     {"p", _, footer_content, _} = hd(reversed_children)
@@ -47,7 +44,7 @@ defmodule Tuftemark.Blockquotes do
     new_attrs = Enum.reject(attrs, &(elem(&1, 0) == "class"))
     new_children = Enum.reverse([footer | tl(reversed_children)])
 
-    blockquote = {"blockquote", new_attrs, new_children, annotations}
+    blockquote = {"blockquote", new_attrs, new_children, meta}
 
     {"div", [{"class", "epigraph"}], [blockquote], %{}}
   end
