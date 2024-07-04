@@ -1,7 +1,7 @@
 defmodule Tuftemark.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @url "https://github.com/stackfusion/tuftemark"
 
   def project do
