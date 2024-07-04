@@ -26,6 +26,7 @@ defmodule Tuftemark.MixProject do
 
   defp deps do
     [
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:earmark, "~> 1.4"},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
