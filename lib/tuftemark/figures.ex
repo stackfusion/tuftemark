@@ -2,13 +2,13 @@ defmodule Tuftemark.Figures do
   @moduledoc """
   Converts Markdown images to HTML figures with layout applicable to Tufte CSS.
 
-  > [!info]
+  > ### Fullwidth & Caption {:.info}
   >
   > If Markdown defines a `.fullwidth` image that is followed by a paragraph
   > supposed to the its `.caption`, we ignore the caption text (as we are not
   > sure how to render it properly yet). Maybe we will handle it later.
 
-  > [!warning]
+  > ### Marginal Images {:.warning}
   >
   > At the original Tufte CSS [page](https://edwardtufte.github.io/tufte-css/),
   > we can see an example of a marginal image (the image of Rhinoceros). Authors
