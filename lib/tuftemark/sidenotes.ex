@@ -1,4 +1,8 @@
 defmodule Tuftemark.Sidenotes do
+  @moduledoc """
+  Converts Markdown footnotes to HTML layout applicable to Tufte CSS.
+  """
+
   alias Earmark.{Restructure, Transform}
   alias Tuftemark.Utils
 

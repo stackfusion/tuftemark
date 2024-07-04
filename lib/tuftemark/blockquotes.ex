@@ -1,4 +1,17 @@
 defmodule Tuftemark.Blockquotes do
+  @moduledoc """
+  Converts Markdown blockquotes to HTML layout applicable to Tufte CSS.
+
+  Supports citations, epigraphs, and regular blockquotes. Type of the final
+  blockquote rely on the given attributes:
+
+  - if blockquote has `cite` attribute set (via Kramdown syntax), we use contents
+    of this attribute as URL for the footenote link (plus, convert the layout of
+    the original blockquote)
+  - if blockquote has `class` attribute set and it has `epigraph` value in it,
+    then we consider it as epigraph and convert its layout accordingly
+  """
+
   alias Earmark.{AstTools, Transform}
 
   def process(ast),
